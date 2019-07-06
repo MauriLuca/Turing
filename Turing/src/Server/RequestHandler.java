@@ -6,12 +6,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.swing.JOptionPane;
 
 public class RequestHandler implements Runnable{
 
@@ -317,7 +323,77 @@ public class RequestHandler implements Runnable{
 						outStream.writeBytes("campo sezione errato" + '\n');
 					}
 				}
+				
+				if(op.equals("list")) {
+					//ottengo l'array che contiene la lista di documenti al quale l'utente può accedere
+					ArrayList<String> list = utente.getDocumentList();
+					
+					String username = utente.getUser();
+					
+					//comunico il nome dell'utente che ha effettuato la richiesta
+					outStream.writeBytes(username + '\n');
+					
+					//mando il numero di documenti al quale l'utente può accedere
+					outStream.writeBytes(Integer.toString(list.size()) + '\n');
+					
+					//mando il nome di ogni documento
+					for(int i = 0; i< list.size(); i++) {
+						outStream.writeBytes(list.get(i) + '\n');
+					}
+				}
+				
+				if(op.equals("endedit")) {
+					
+					//ottengo nome del documento e numero di sezione
+					String nameDocument = inStream.readLine();
+					String numOfSection = inStream.readLine();
+					
+					//apro il serversocketchannel
+					ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+					//creo un socketaddress random
+					InetSocketAddress isa = new InetSocketAddress(0);
+					//effettuo la bind sull'address
+					serverSocketChannel.bind(isa);
+					//ottengo la porta random sulla quale ho fatto la bind
+					Integer port = serverSocketChannel.socket().getLocalPort();
+					//invio la porta e il nome utente al client
+					outStream.writeBytes(port.toString() + '\n');
+					outStream.writeBytes(utente.getUser() + '\n');
+					//accetto la connessione in arrivo dal server
+					SocketChannel socketChannel = serverSocketChannel.accept();
+					
+					//routine di ricezione file
+					FileChannel fc = null;
+					String path = Configuration.path + "/" + nameDocument;
+					Files.createDirectories(Paths.get(path));
 
+					path = path + "/Section_" + numOfSection + ".txt";
+
+					//apro il file channel in mdalità scrittura
+					fc = FileChannel.open(Paths.get(path), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+					//alloco il buffer supponendo file di testo di dimensione inferiore a 2kb
+					ByteBuffer buf = ByteBuffer.allocate(2048);
+
+					//leggo e scrivo sul buffer
+					while(socketChannel.read(buf) > 0) {
+						buf.flip();
+						fc.write(buf);
+						buf.clear();
+					}
+
+					//chiudo filechannel e socketchannel
+					fc.close();
+					socketChannel.close();
+					fc = null;
+					socketChannel = null;
+
+					JOptionPane.showMessageDialog(null, "Sezione ricevuta correttamente");
+
+					//chiudo il serversocketchannel
+					serverSocketChannel.close();
+					serverSocketChannel = null;					
+				
+				}
 				//continuo il case switch
 
 			}

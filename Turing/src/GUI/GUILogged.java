@@ -25,7 +25,9 @@ public class GUILogged extends JFrame {
 	private JButton btnEdit;
 	private JButton btnShow;
 	private JButton btnList;
+	private JTextField inviteNameField;
 	private JTextArea textArea;
+	private JButton btnInvite;
 	
 	public GUILogged() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -99,10 +101,11 @@ public class GUILogged extends JFrame {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(10, 139, 487, 338);
+		scrollPane.setBounds(10, 179, 487, 298);
 		contentPane.add(scrollPane);
 		
 		textArea = new JTextArea();
+		textArea.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textArea.setEditable(false);
 		scrollPane.setViewportView(textArea);
 		
@@ -113,8 +116,30 @@ public class GUILogged extends JFrame {
 		btnList.setBounds(509, 139, 130, 33);
 		contentPane.add(btnList);
 		
+		btnInvite = new JButton("INVITE");
+		btnInvite.setForeground(Color.BLACK);
+		btnInvite.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnInvite.setBackground(new Color(0, 51, 255));
+		btnInvite.setBounds(507, 182, 130, 33);
+		contentPane.add(btnInvite);
+		
+		JLabel lblUtenteInvitato = new JLabel("Utente Invitato");
+		lblUtenteInvitato.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblUtenteInvitato.setBounds(10, 139, 145, 33);
+		contentPane.add(lblUtenteInvitato);
+		
+		inviteNameField = new JTextField();
+		inviteNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		inviteNameField.setColumns(10);
+		inviteNameField.setBounds(206, 143, 156, 29);
+		contentPane.add(inviteNameField);
+		
 	}
 	
+	public JButton getInvite() {
+		return btnInvite;
+	}
+
 	public JTextArea getTextArea() {
 		return textArea;
 	}
@@ -147,6 +172,9 @@ public class GUILogged extends JFrame {
 		return sectionField.getText();
 	}
 	
+	public String getInviteName() {
+		return inviteNameField.getText();
+	}
 	public String getNumOfSections() {
 		return numOfSectionsField.getText();
 	}

@@ -21,46 +21,46 @@ public class LoginHandler extends Thread {
 	private GUITuring frame; //Interfaccia grafica
 	private String password; //password dell'utente
 	private GUILogged frameLogged;
-	
+
 	public LoginHandler(Socket clientSock, DataOutputStream outStream, BufferedReader inStream, GUITuring frame) {
-		
+
 		if(frame == null || clientSock == null || outStream == null || inStream == null) throw new NullPointerException();
-		
+
 		//controllo che il socket non sia chiuso
 		if(clientSock.isClosed()) throw new IllegalArgumentException();
-		
+
 		this.clientSock = clientSock;
 		this.outStream = outStream;
 		this.inStream = inStream;
 		this.frame = frame;
-		
+
 	}
 
 	public void run() {
-		
+
 		//imposto il tipo di operazione
 		String op = "login" + '\n';
-		
+
 		try {
 			//comunico l'operazione all'handler
 			outStream.writeBytes(op);
-			
+
 			//ottengo username e password
 			username = frame.getUsername() + '\n';
-			
+
 			password = frame.getPassword() + '\n';
-			
+
 			outStream.writeBytes(username);
 			outStream.writeBytes(password);
-			
+
 			String temp = inStream.readLine();
-			
+
 			//se ho effettuato il login con successo posso avviare la GUI del Client
 			if(temp.contains("successo")) {
 				//chiudo la GUI di login
 				frame.setVisible(false);
 				frame.dispose();
-				
+
 				//avvia l'interfaccia grafica di login
 				try {
 					frameLogged = new GUILogged();
@@ -68,7 +68,7 @@ public class LoginHandler extends Thread {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				//Inizializzo il pulsante di Logout
 				frameLogged.getLogout().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -76,9 +76,9 @@ public class LoginHandler extends Thread {
 						Thread logoutThread = new LogoutHandler(clientSock, outStream, inStream, frameLogged);
 						logoutThread.start();
 					}
-					
+
 				});
-				
+
 				//Inizializzo il pulsante di CreateDocument
 				frameLogged.getCreate().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -92,9 +92,9 @@ public class LoginHandler extends Thread {
 							createThread.start();
 						}
 					}
-					
+
 				});
-				
+
 				//Inizializzo il pulsante di EditDocument
 				frameLogged.getEdit().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -108,9 +108,9 @@ public class LoginHandler extends Thread {
 							editThread.start();
 						}
 					}
-					
+
 				});
-				
+
 				//Inizializzo il pulsante di showdocument
 				frameLogged.getShow().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -124,7 +124,7 @@ public class LoginHandler extends Thread {
 								//parte il Thread
 								Thread showDocumentThread = new ShowDocumentHandler(clientSock, outStream, inStream, frameLogged);
 								showDocumentThread.start();
-								}
+							}
 							//caso parametro sezione esistente mostro la sezione del documento
 							else {
 								Thread showSectionThread = new ShowSectionHandler(clientSock, outStream, inStream, frameLogged);
@@ -132,28 +132,43 @@ public class LoginHandler extends Thread {
 							}
 						}
 					}
-					
+
 				});
-				
+
 				//Inizializzo il pulsante di ListDocument
 				frameLogged.getList().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-							//parte il Thread
-							Thread listThread = new ListHandler(clientSock, outStream, inStream, frameLogged);
-							listThread.start();
-						}
-					
+						//parte il Thread
+						Thread listThread = new ListHandler(clientSock, outStream, inStream, frameLogged);
+						listThread.start();
+					}
+
 				});
-				
+
+				//Inizializzo il pulsante di invite
+				frameLogged.getInvite().addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(frameLogged.getInviteName().length()==0) {
+							JOptionPane.showMessageDialog(null, "Campo nome invito vuoto");
+						}
+						else {
+							//parte il Thread
+							Thread inviteThread = new InviteHandler(clientSock, outStream, inStream, frameLogged);
+							inviteThread.start();
+						}
+					}
+
+				});
+
 			}
-			
+
 			//Thread listener = new Thread(new NotificationListener());
 			//listener.start();
-			
+
 		}
 		catch(IOException e){
 			e.printStackTrace();	
 		}
-		
+
 	}
 }

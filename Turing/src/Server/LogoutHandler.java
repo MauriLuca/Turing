@@ -1,5 +1,7 @@
 package Server;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,24 +14,24 @@ import GUI.GUITuring;
 
 public class LogoutHandler extends Thread {
 
-	//private Socket clientSock; //Socket TCP
+	private Socket clientSock; //Socket TCP
 	private DataOutputStream outStream; //Stream in output
 	private BufferedReader inStream; //Stream in input
 	private String username; //Username che effettua la richiesta di logout
-	private GUILogged frame; //Interfaccia grafica
+	private GUILogged frameLogged; //Interfaccia grafica
 	private String password; //password dell'utente
 	
-	public LogoutHandler(Socket clientSock, DataOutputStream outStream, BufferedReader inStream, GUILogged frame) {
+	public LogoutHandler(Socket clientSock, DataOutputStream outStream, BufferedReader inStream, GUILogged frameLogged) {
 		
-		if(frame == null || clientSock == null || outStream == null || inStream == null) throw new NullPointerException();
+		if(frameLogged == null || clientSock == null || outStream == null || inStream == null) throw new NullPointerException();
 		
 		//controllo che il socket non sia chiuso
 		if(clientSock.isClosed()) throw new IllegalArgumentException();
 		
-		//this.clientSock = clientSock;
+		this.clientSock = clientSock;
 		this.outStream = outStream;
 		this.inStream = inStream;
-		this.frame = frame;
+		this.frameLogged = frameLogged;
 		
 	}
 
@@ -48,12 +50,13 @@ public class LogoutHandler extends Thread {
 			if(temp.contains("successo")) {
 				JOptionPane.showMessageDialog(null, "Logout effettuato con successo");
 				//chiudo la GUI di logout
-				frame.setVisible(false);
-				frame.dispose();
+				frameLogged.setVisible(false);
+				frameLogged.dispose();
 				
 				//clientSock.close();
 				outStream.close();
 				inStream.close();
+				
 			}
 			else {
 				JOptionPane.showMessageDialog(null, "Errore nell'eseguire il logout");

@@ -18,6 +18,7 @@ import java.nio.file.StandardOpenOption;
 
 import javax.swing.JOptionPane;
 
+import GUI.GUIEditing;
 import GUI.GUILogged;
 
 public class EditHandler extends Thread {
@@ -96,17 +97,9 @@ public class EditHandler extends Thread {
 				Files.createDirectories(Paths.get(path));
 
 				path = path + "/Section_" + section + ".txt";
-				File directory = new File(path);
-				//se il file già esiste lo sovrascrivo
-				if(directory.exists()) {
-					directory.delete();
-				}
-				else {
-					directory.createNewFile();
-				}
 
 				//apro il file channel in mdalità scrittura
-				fc = FileChannel.open(Paths.get(path), StandardOpenOption.WRITE);
+				fc = FileChannel.open(Paths.get(path), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 				//alloco il buffer supponendo file di testo di dimensione inferiore a 2kb
 				ByteBuffer buf = ByteBuffer.allocate(2048);
 
@@ -128,6 +121,7 @@ public class EditHandler extends Thread {
 				//chiudo il serversocketchannel
 				serverSocketChannel.close();
 				serverSocketChannel = null;
+				
 				//chiudo la finestra logged
 				frameLogged.setVisible(false);
 				frameLogged.dispose();
@@ -141,7 +135,7 @@ public class EditHandler extends Thread {
 				frameEditing.getEndEdit().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 							//parte il Thread
-							Thread endEditThread = new EndEditHandler(clientSock, outStream, inStream, frameEditing);
+							Thread endEditThread = new EndEditHandler(clientSock, outStream, inStream, frameEditing, frameLogged, nameDocument, section);
 							endEditThread.start();
 					}
 					
