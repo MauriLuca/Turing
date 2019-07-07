@@ -20,7 +20,7 @@ public class ServerTuring {
 	private static ConcurrentHashMap<String,Document> documentList; //HashMap che memorizza tutti i documenti creati
 	private static ThreadPoolExecutor tp; //ThreadPool
 	private static ServerSocket serverSock;//Socket per la connessione dei client
-	
+	private static ServerSocket notifySock;//Socket per le notifiche
 
 	public static void main(String args[]) throws Exception{
 		
@@ -30,6 +30,7 @@ public class ServerTuring {
 		onlineUsers = new ConcurrentHashMap<String,User>();
 		tp = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 		serverSock = new ServerSocket(Configuration.PORT_TCP);
+		notifySock = new ServerSocket(Configuration.PORT_NOTIFY);
 		
 		documentList = new ConcurrentHashMap<String, Document>();
 		
@@ -59,7 +60,7 @@ public class ServerTuring {
 		}
 		
 		//Avvio il Listener
-		Thread listener = new Thread(new Listener(registeredUsers, onlineUsers, documentList, serverSock, tp));	
+		Thread listener = new Thread(new Listener(registeredUsers, onlineUsers, documentList, serverSock, notifySock, tp));	
 		listener.start();
 		System.out.println("Listener avviato...");
 	}

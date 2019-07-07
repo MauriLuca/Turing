@@ -64,4 +64,7 @@ public class Document {
 		return authorizedUsers;
 	}
 	
+	public void addAtuthorizedUser(String username, User utente) {
+		authorizedUsers.put(username, utente);
+	}
 }

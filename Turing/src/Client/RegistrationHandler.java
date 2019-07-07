@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -8,6 +8,8 @@ import java.rmi.registry.Registry;
 import javax.swing.JOptionPane;
 
 import GUI.GUITuring;
+import Server.Configuration;
+import Server.RegistrationInterface;
 
 public class RegistrationHandler extends Thread {
 

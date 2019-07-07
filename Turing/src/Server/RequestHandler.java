@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -19,20 +20,25 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 
+import Client.NotificationHandler;
+import Client.ShowSectionHandler;
+
 public class RequestHandler implements Runnable{
 
 	private ConcurrentHashMap<String,User> registeredUsers; //HashMap che memorizza tutti gli utenti registrati
 	private static ConcurrentHashMap<String, User> onlineUsers; //HashMap che memorizza tutti gli utenti online
 	private ConcurrentHashMap<String,Document> documentList; //HashMap che memorizza tutti i documenti creati
-	//private ServerSocket serverSock;
-	//private Socket notiSock; //socket per le notifiche
+	private ServerSocket notifySock; //socket per le notifiche
 	private Socket connSock; //socket per effettuare l'accept delle connessioni
+	private Socket notifySocket;//socket per le notifiche
 
-	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket) {
+	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket, ServerSocket notifySock) {
 		this.registeredUsers = registeredUsers;
 		this.connSock = connectionSocket;
 		this.onlineUsers = onlineUsers;
 		this.documentList = documentList;
+		this.notifySock = notifySock;
+		this.notifySocket = null;
 
 	}
 
@@ -81,8 +87,28 @@ public class RequestHandler implements Runnable{
 									System.out.println("password ok");
 									utente.setStato(Stato.logged);
 									onlineUsers.put(username, utente);
-									//scrivo sullo stream che ho effettuato il login
-									outStream.writeBytes("Login effettuato con successo" + '\n');
+									
+									if(utente.hasPendingOfflineInvites()) {
+										
+										outStream.writeBytes("pending" + '\n');
+										outStream.writeBytes(Integer.toString(utente.getInvitiOffline().size()) + '\n');
+										
+										for (int i = 0; i<utente.getInvitiOffline().size(); i++) {
+											outStream.writeBytes(utente.getInvitiOffline().get(i) + '\n');
+										}
+									}
+									else {
+										//scrivo sullo stream che ho effettuato il login
+										outStream.writeBytes("Login effettuato con successo" + '\n');
+									}
+									
+									
+									System.out.println("faccio la accept");
+									notifySocket = notifySock.accept();
+									System.out.println("mi blocco sulla accept");
+									Thread notifyThread = new Thread(new NotificationHandler(username, notifySocket, utente, documentList));
+									notifyThread.start();
+									
 
 								}
 
@@ -391,8 +417,64 @@ public class RequestHandler implements Runnable{
 
 					//chiudo il serversocketchannel
 					serverSocketChannel.close();
-					serverSocketChannel = null;					
+					serverSocketChannel = null;	
+					
+					//tolgo il flag di edit dalla sezione e dall'utente
+					documentList.get(nameDocument).getSection(Integer.parseInt(numOfSection)).setEdit(false);;
+					utente.setStato(Stato.logged);
 				
+				}
+				
+				if(op.equals("invite")) {
+					
+					if(utente != null) {
+						
+						String invitedUsername = inStream.readLine();
+						String nameDocument = inStream.readLine();
+						Document document = documentList.get(nameDocument);
+						
+						//se esiste il documento
+						if(documentList.containsKey(nameDocument)) {
+							
+							//se l'utente è il creatore allora può invitare
+							if(documentList.get(nameDocument).getCreator() == utente) {
+								
+								//se l'utente da invitare esiste
+								if(registeredUsers.containsKey(invitedUsername)){
+									
+									User invitedUser = registeredUsers.get(invitedUsername);
+									
+									//se l'utente non è già un collaboratore del documento
+									if(!registeredUsers.get(invitedUsername).getDocumentList().contains(nameDocument)) {
+										
+										//aggiungo l'utente alla lista di utenti che possono accedere al documento
+										document.addAtuthorizedUser(invitedUsername, invitedUser);
+										invitedUser.addDocument(nameDocument);
+										
+										if(onlineUsers.containsKey(invitedUsername)) {
+											invitedUser.addOnlineInvite(nameDocument);
+										}
+										else {
+											invitedUser.addOfflineInvite(nameDocument);
+										}
+										outStream.writeBytes("l'utente è stato invitato con successo" + '\n');
+									}
+									else {
+										outStream.writeBytes("l'utente è già un collaboratore" + '\n');
+									}
+								}
+								else {
+								outStream.writeBytes("l'utente da invitare non esiste" + '\n');
+								}
+							}
+							else {
+							outStream.writeBytes("accesso al documento negato" + '\n');
+							}
+						}
+						else {
+						outStream.writeBytes("il documento non è stato trovato" + '\n');
+						}
+					}
 				}
 				//continuo il case switch
 

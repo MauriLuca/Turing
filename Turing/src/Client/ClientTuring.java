@@ -13,8 +13,6 @@ import javax.swing.JOptionPane;
 
 import GUI.GUITuring;
 import Server.Configuration;
-import Server.LoginHandler;
-import Server.RegistrationHandler;
 import Server.RegistrationInterface;
 
 public class ClientTuring {
