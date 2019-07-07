@@ -14,9 +14,7 @@ public class LogoutHandler extends Thread {
 	private Socket clientSock; //Socket TCP
 	private DataOutputStream outStream; //Stream in output
 	private BufferedReader inStream; //Stream in input
-	private String username; //Username che effettua la richiesta di logout
 	private GUILogged frameLogged; //Interfaccia grafica
-	private String password; //password dell'utente
 	
 	public LogoutHandler(Socket clientSock, DataOutputStream outStream, BufferedReader inStream, GUILogged frameLogged) {
 		
@@ -50,7 +48,7 @@ public class LogoutHandler extends Thread {
 				frameLogged.setVisible(false);
 				frameLogged.dispose();
 				
-				//clientSock.close();
+				clientSock.close();
 				outStream.close();
 				inStream.close();
 				

@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JOptionPane;
 
 import Client.NotificationHandler;
-import Client.ShowSectionHandler;
 
 public class RequestHandler implements Runnable{
 
@@ -88,52 +87,43 @@ public class RequestHandler implements Runnable{
 									utente.setStato(Stato.logged);
 									onlineUsers.put(username, utente);
 									
+									//se l'utente è stato invitato mentre era offline
 									if(utente.hasPendingOfflineInvites()) {
-										
+										//comunico che ha degli inviti pendenti
 										outStream.writeBytes("pending" + '\n');
+										//comunico quanti inviti dovrà ricevere
 										outStream.writeBytes(Integer.toString(utente.getInvitiOffline().size()) + '\n');
 										
 										for (int i = 0; i<utente.getInvitiOffline().size(); i++) {
 											outStream.writeBytes(utente.getInvitiOffline().get(i) + '\n');
 										}
+										
+										String esito = inStream.readLine();
+										if(esito.contains("letti")) {
+											utente.clearInvitiOffline();
+										}
 									}
 									else {
-										//scrivo sullo stream che ho effettuato il login
 										outStream.writeBytes("Login effettuato con successo" + '\n');
 									}
-									
-									
-									System.out.println("faccio la accept");
 									notifySocket = notifySock.accept();
-									System.out.println("mi blocco sulla accept");
-									Thread notifyThread = new Thread(new NotificationHandler(username, notifySocket, utente, documentList));
+									Thread notifyThread = new NotificationHandler(username, notifySocket, utente, documentList);
 									notifyThread.start();
-									
-
 								}
 
 								else {
-									//scrivo sullo stream che l'utente ha sbagliato password
 									outStream.writeBytes("Password errata" + '\n');
-									System.out.println("Password errata");
 								}
 
 							}
-
 							else {
-								//scrivo sullo stream che l'utente è già online
 								outStream.writeBytes("Utente già online" + '\n');
-								System.out.println("Utente già online");
 							}
-
 						}
 
 						else {
-							//scrivo sullo stream che l'utente non è registrato
 							outStream.writeBytes("Utente non registrato" + '\n');
-							System.out.println("Utente non registrato");
 						}
-
 					}
 				}
 
@@ -451,9 +441,12 @@ public class RequestHandler implements Runnable{
 										document.addAtuthorizedUser(invitedUsername, invitedUser);
 										invitedUser.addDocument(nameDocument);
 										
+										//controllo se è online e va notificato subito
 										if(onlineUsers.containsKey(invitedUsername)) {
+											System.out.println("ciaoneoneone");
 											invitedUser.addOnlineInvite(nameDocument);
 										}
+										//aggiungo nella lista degli inviti offline
 										else {
 											invitedUser.addOfflineInvite(nameDocument);
 										}

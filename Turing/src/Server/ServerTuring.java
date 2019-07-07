@@ -60,7 +60,7 @@ public class ServerTuring {
 		}
 		
 		//Avvio il Listener
-		Thread listener = new Thread(new Listener(registeredUsers, onlineUsers, documentList, serverSock, notifySock, tp));	
+		Thread listener = new Listener(registeredUsers, onlineUsers, documentList, serverSock, notifySock, tp);	
 		listener.start();
 		System.out.println("Listener avviato...");
 	}

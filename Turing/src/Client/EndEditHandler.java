@@ -171,7 +171,7 @@ public class EndEditHandler extends Thread {
 					}
 					else {
 						//parte il Thread
-						Thread inviteThread = new InviteHandler(clientSock, outStream, inStream, frameLogged);
+						Thread inviteThread = new InviteHandler(outStream, inStream, frameLogged);
 						inviteThread.start();
 					}
 				}

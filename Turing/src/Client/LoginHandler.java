@@ -39,24 +39,31 @@ public class LoginHandler extends Thread {
 
 	public void run() {
 
-		//imposto il tipo di operazione
-		String op = "login" + '\n';
-
 		try {
 			//comunico l'operazione all'handler
-			outStream.writeBytes(op);
+			outStream.writeBytes("login" + '\n');
 
 			//ottengo username e password
-			username = frame.getUsername() + '\n';
+			username = frame.getUsername();
 
-			password = frame.getPassword() + '\n';
+			password = frame.getPassword();
 
-			outStream.writeBytes(username);
-			outStream.writeBytes(password);
+			outStream.writeBytes(username + '\n');
+			outStream.writeBytes(password + '\n');
 
 			String temp = inStream.readLine();
-
-			if(temp.contains("pending")) {
+			
+			if(temp.contains("errata")) {
+				JOptionPane.showMessageDialog(null, "Password Errata");
+			}
+			else if(temp.contains("online")) {
+				JOptionPane.showMessageDialog(null, "Utente già online");
+			}
+			else if(temp.contains("registrato")) {
+				JOptionPane.showMessageDialog(null, "Utente già registrato");
+			}
+			//se ho dei documenti in attesa
+			else if(temp.contains("pending")) {
 				
 				int pendingInvites = Integer.parseInt(inStream.readLine());
 				String invites = "";
@@ -64,18 +71,21 @@ public class LoginHandler extends Thread {
 					invites = invites + '\n'+ inStream.readLine() + '\n'; 
 				}
 				
+				//comunico al server che ho letto gli inviti pendeneti e che deve rimuoverli dalla lista dell'utente
+				outStream.writeBytes("inviti letti" + '\n');
+				
 				JOptionPane.showMessageDialog(null, "Sei stato invitato a collaborare ai seguenti documenti: " + invites);
 				initializeFormAndButtons();
+				Thread listenerNotifiche = new Thread(new Notify());
+				listenerNotifiche.start();
 			}
 			
 			//se ho effettuato il login con successo posso avviare la GUI del Client
 			else if(temp.contains("successo")) {
 				initializeFormAndButtons();
+				Thread listenerNotifiche = new Thread(new Notify());
+				listenerNotifiche.start();
 			}
-			
-			Thread listener = new Thread(new Notify());
-			listener.start();
-			System.out.println("parte il thread");
 
 		}
 		catch(IOException e){
@@ -182,7 +192,7 @@ public class LoginHandler extends Thread {
 				}
 				else {
 					//parte il Thread
-					Thread inviteThread = new InviteHandler(clientSock, outStream, inStream, frameLogged);
+					Thread inviteThread = new InviteHandler(outStream, inStream, frameLogged);
 					inviteThread.start();
 				}
 			}
