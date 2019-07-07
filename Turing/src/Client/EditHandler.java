@@ -6,7 +6,10 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -15,11 +18,14 @@ import java.nio.channels.SocketChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import javax.swing.JOptionPane;
 
 import GUI.GUIEditing;
 import GUI.GUILogged;
+import Server.Chat;
 import Server.Configuration;
 
 public class EditHandler extends Thread {
@@ -29,6 +35,10 @@ public class EditHandler extends Thread {
 	private GUILogged frameLogged; //Interfaccia grafica di logged
 	private GUIEditing frameEditing; //interfaccia grafica di editing
 	private Socket clientSock; //Socket TCP
+	private String multicastAddress;
+	private Calendar calendar;
+	private MulticastSocket chatSock;
+	private String username;
 
 	public EditHandler(Socket clientSock, DataOutputStream outStream, BufferedReader inStream, GUILogged frameLogged) {
 
@@ -60,6 +70,8 @@ public class EditHandler extends Thread {
 			//comunico il nome del documento e il numero della sezione
 			outStream.writeBytes(nameDocument + '\n');
 			outStream.writeBytes(section + '\n');
+
+			username = inStream.readLine();
 
 			//leggo l'esito
 			String temp = inStream.readLine();
@@ -122,7 +134,7 @@ public class EditHandler extends Thread {
 				//chiudo il serversocketchannel
 				serverSocketChannel.close();
 				serverSocketChannel = null;
-				
+
 				//chiudo la finestra logged
 				frameLogged.setVisible(false);
 				frameLogged.dispose();
@@ -130,18 +142,30 @@ public class EditHandler extends Thread {
 				//apro la finestra di editing con la chat
 				frameEditing = new GUIEditing();
 				frameEditing.setVisible(true);
-				
-				
+
+				chatSock = new MulticastSocket(Configuration.PORT_MULTICAST);
+
 				//Inizializzo il pulsante di EndEditDocument
 				frameEditing.getEndEdit().addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-							//parte il Thread
-							Thread endEditThread = new EndEditHandler(clientSock, outStream, inStream, frameEditing, frameLogged, nameDocument, section);
-							endEditThread.start();
+						//parte il Thread
+						Thread endEditThread = new EndEditHandler(clientSock, outStream, inStream, frameEditing, frameLogged, nameDocument, section);
+						endEditThread.start();
 					}
-					
+
 				});
 
+				frameEditing.getSend().addActionListener(new ActionListener() { 
+					public void actionPerformed(ActionEvent e) {
+						sendMsg();
+					}
+				});
+
+				multicastAddress = inStream.readLine();
+
+				Thread chatThread = new Chat(frameEditing.getTextArea(), chatSock, InetAddress.getByName(multicastAddress));
+				chatThread.start();
+				System.out.println("ciapala");
 			}
 
 
@@ -150,6 +174,35 @@ public class EditHandler extends Thread {
 			e.printStackTrace();	
 		}
 
+	}
+
+	public void sendMsg(){
+		try {
+			System.out.println("non styampa");
+
+			calendar = Calendar.getInstance(TimeZone.getDefault());
+			int h = calendar.get(Calendar.HOUR);
+			int min = calendar.get(Calendar.MINUTE);
+
+			String input = frameEditing.getTextField().getText();
+
+			String msg = "[" + username + " " + h + ":" + min + "]: " + input;
+			System.out.println(msg);
+			if(input.length() > 0) {
+				byte[] buffer = msg.getBytes();
+
+				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(multicastAddress), Configuration.PORT_MULTICAST);
+				chatSock.send(packet);
+			}
+			System.out.println(msg);
+			//cancello l'area di testo
+			frameEditing.getTextField().setText("");
+			System.out.println(msg);
+
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 

@@ -18,6 +18,7 @@ public class GUIEditing extends JFrame {
 	private JButton btnEndEdit;
 	private JTextField textField;
 	private JButton btnSend;
+	private JTextArea textArea;
 
 	public GUIEditing() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,7 +35,7 @@ public class GUIEditing extends JFrame {
 		btnEndEdit.setBounds(509, 444, 130, 33);
 		contentPane.add(btnEndEdit);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setBounds(10, 10, 629, 299);
 		contentPane.add(textArea);
@@ -59,4 +60,12 @@ public class GUIEditing extends JFrame {
 	public JButton getSend() {
 		return btnSend;
 	}
+	
+	public JTextArea getTextArea() {
+		return textArea;
+	}
+	public JTextField getTextField() {
+		return textField;
+	}
+	
 }

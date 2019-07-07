@@ -30,6 +30,7 @@ public class RequestHandler implements Runnable{
 	private ServerSocket notifySock; //socket per le notifiche
 	private Socket connSock; //socket per effettuare l'accept delle connessioni
 	private Socket notifySocket;//socket per le notifiche
+	private ArrayList<String> multicastAddressList;
 
 	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket, ServerSocket notifySock) {
 		this.registeredUsers = registeredUsers;
@@ -38,6 +39,7 @@ public class RequestHandler implements Runnable{
 		this.documentList = documentList;
 		this.notifySock = notifySock;
 		this.notifySocket = null;
+		multicastAddressList = new ArrayList<String>();
 
 	}
 
@@ -166,8 +168,12 @@ public class RequestHandler implements Runnable{
 							}
 							//tutto ok
 							else {
+								
+								//genero un indirizzo 
+								String multicastAddress = generateMulticastAddress();
+								System.out.println("Multicast address generato: " + multicastAddress);
 								//creo il documento
-								Document document = new Document(utente, nameDocument, numOfSectionsInt);
+								Document document = new Document(utente, nameDocument, numOfSectionsInt, multicastAddress);
 								//lo aggiungo alla lista documenti
 								documentList.put(nameDocument, document);
 								//lo aggiungo alla lista dei documenti che l'utente può modificare
@@ -187,6 +193,8 @@ public class RequestHandler implements Runnable{
 					if(utente != null) {
 						String nameDocument = inStream.readLine();
 						String numSection = inStream.readLine();
+						
+						outStream.writeBytes(utente.getUser() + '\n');
 
 						if(documentList.containsKey(nameDocument)) {
 
@@ -236,7 +244,8 @@ public class RequestHandler implements Runnable{
 										socketChannel = null;
 
 										utente.setStato(Stato.editing);
-
+										String multicastAddress = documentList.get(nameDocument).getMulticastAddress();
+										outStream.writeBytes(multicastAddress + '\n');
 
 									}
 
@@ -536,6 +545,27 @@ public class RequestHandler implements Runnable{
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	//metodo per generare un indirizzo multicast non in uso
+	public String generateMulticastAddress() {
+		int tmp = (int)(Math.random()*40);
+		
+		while(tmp < 24 || tmp > 40) {
+			tmp = (int)(Math.random()*40);
+		}
+		
+		tmp += 200;
+		String res = tmp + "." + (int)(Math.random()*256) + "." + (int)(Math.random()*256) + "." + (int)(Math.random()*256);
+		
+		if(multicastAddressList.contains(res)) {
+			res = generateMulticastAddress();
+		}
+		else{
+			multicastAddressList.add(res);
+		}
+		
+		return res;
 	}
 
 }

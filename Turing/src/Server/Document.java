@@ -15,12 +15,14 @@ public class Document {
 	private static ConcurrentHashMap<String, User> authorizedUsers; //HashMap che memorizza tutti gli utenti autorizzati all'edit del documento
 	private ArrayList<Section> doc; 
 	private Path path;
+	private String multicastAddress;
 	
 	
-	public Document(User creator, String nameDocument, int numOfSections) {
+	public Document(User creator, String nameDocument, int numOfSections, String multicastAddress) {
 		this.creator = creator;
 		this.nameDocument = nameDocument;
 		this.numOfSections = numOfSections;
+		this.multicastAddress = multicastAddress;
 		authorizedUsers = new ConcurrentHashMap<String, User>();
 		authorizedUsers.put(creator.getUser(), creator);
 		this.doc = new ArrayList<Section>();
@@ -66,5 +68,9 @@ public class Document {
 	
 	public void addAtuthorizedUser(String username, User utente) {
 		authorizedUsers.put(username, utente);
+	}
+	
+	public String getMulticastAddress() {
+		return multicastAddress;
 	}
 }

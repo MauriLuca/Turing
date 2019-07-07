@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 
 import GUI.GUIEditing;
 import GUI.GUILogged;
+import Server.Chat;
 import Server.Configuration;
 
 public class EndEditHandler extends Thread {
@@ -84,6 +85,8 @@ public class EndEditHandler extends Thread {
 			//apro la GUI Logged
 			frameLogged = new GUILogged();
 			frameLogged.setVisible(true);
+			
+			Chat.endChat();
 			
 			//----------------------------------------------------------------------------------------------------------------
 			
