@@ -157,7 +157,7 @@ public class EditHandler extends Thread {
 
 				frameEditing.getSend().addActionListener(new ActionListener() { 
 					public void actionPerformed(ActionEvent e) {
-						sendMsg();
+						sendMessage();
 					}
 				});
 
@@ -176,28 +176,25 @@ public class EditHandler extends Thread {
 
 	}
 
-	public void sendMsg(){
+	public void sendMessage(){
 		try {
 			System.out.println("non styampa");
 
 			calendar = Calendar.getInstance(TimeZone.getDefault());
-			int h = calendar.get(Calendar.HOUR);
-			int min = calendar.get(Calendar.MINUTE);
+			int hours = calendar.get(Calendar.HOUR_OF_DAY);
+			int minutes = calendar.get(Calendar.MINUTE);
 
-			String input = frameEditing.getTextField().getText();
+			String textField = frameEditing.getTextField().getText();
 
-			String msg = "[" + username + " " + h + ":" + min + "]: " + input;
-			System.out.println(msg);
-			if(input.length() > 0) {
+			String msg = "[" + username + "-" + hours + ":" + minutes + "]: " + textField;
+			if(textField.length() > 0) {
 				byte[] buffer = msg.getBytes();
 
 				DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(multicastAddress), Configuration.PORT_MULTICAST);
 				chatSock.send(packet);
 			}
-			System.out.println(msg);
 			//cancello l'area di testo
 			frameEditing.getTextField().setText("");
-			System.out.println(msg);
 
 		}
 		catch(IOException e) {

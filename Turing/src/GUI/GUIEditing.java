@@ -36,11 +36,13 @@ public class GUIEditing extends JFrame {
 		contentPane.add(btnEndEdit);
 		
 		textArea = new JTextArea();
+		textArea.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textArea.setEditable(false);
 		textArea.setBounds(10, 10, 629, 299);
 		contentPane.add(textArea);
 		
 		textField = new JTextField();
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		textField.setBounds(10, 319, 489, 115);
 		contentPane.add(textField);
 		textField.setColumns(10);
