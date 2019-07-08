@@ -484,6 +484,12 @@ public class RequestHandler implements Runnable{
 
 		}
 		catch(IOException e) {
+			//funzione che dealloca e chiude le connessioni aperte
+			try {
+				connSock.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	}

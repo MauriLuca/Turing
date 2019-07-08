@@ -76,15 +76,11 @@ public class LoginHandler extends Thread {
 				
 				JOptionPane.showMessageDialog(null, "Sei stato invitato a collaborare ai seguenti documenti: " + invites);
 				initializeFormAndButtons();
-				Thread listenerNotifiche = new Notify();
-				listenerNotifiche.start();
 			}
 			
 			//se ho effettuato il login con successo posso avviare la GUI del Client
 			else if(temp.contains("successo")) {
 				initializeFormAndButtons();
-				Thread listenerNotifiche = new Notify();
-				listenerNotifiche.start();
 			}
 
 		}
@@ -198,5 +194,8 @@ public class LoginHandler extends Thread {
 			}
 
 		});
+		
+		Thread listenerNotifiche = new Notify();
+		listenerNotifiche.start();
 	}
 }
