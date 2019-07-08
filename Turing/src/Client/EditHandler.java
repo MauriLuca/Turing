@@ -140,7 +140,7 @@ public class EditHandler extends Thread {
 				frameLogged.dispose();
 
 				//apro la finestra di editing con la chat
-				frameEditing = new GUIEditing();
+				frameEditing = new GUIEditing(username);
 				frameEditing.setVisible(true);
 
 				chatSock = new MulticastSocket(Configuration.PORT_MULTICAST);

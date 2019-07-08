@@ -83,7 +83,7 @@ public class EndEditHandler extends Thread {
 			frameEditing.dispose();
 			
 			//apro la GUI Logged
-			frameLogged = new GUILogged();
+			frameLogged = new GUILogged(username);
 			frameLogged.setVisible(true);
 			
 			Chat.endChat();

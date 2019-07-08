@@ -11,14 +11,12 @@ import Server.User;
 
 public class NotificationHandler extends Thread {
 
-	private String username;
 	private Socket notifySocket;
 	private DataOutputStream outStream;
 	private User utente;
 	private ConcurrentHashMap<String, Document> documentList;
 
-	public NotificationHandler(String username, Socket notifySocket, User utente, ConcurrentHashMap<String, Document> documentList) {
-		this.username = username;
+	public NotificationHandler(Socket notifySocket, User utente, ConcurrentHashMap<String, Document> documentList) {
 		this.notifySocket = notifySocket;
 		this.utente = utente;
 		this.documentList = documentList;
@@ -33,10 +31,9 @@ public class NotificationHandler extends Thread {
 			while(true) {
 
 				ArrayList<String> documentListInvitations = utente.getInvitiOnline(); 
-
+				System.out.println("loop");
 				if (utente == null)
 					break;
-
 				//se l'utente ha inviti online
 				if(!documentListInvitations.isEmpty()) {
 

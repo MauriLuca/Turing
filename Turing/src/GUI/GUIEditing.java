@@ -20,7 +20,8 @@ public class GUIEditing extends JFrame {
 	private JButton btnSend;
 	private JTextArea textArea;
 
-	public GUIEditing() {
+	public GUIEditing(String username) {
+		setTitle(username);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 663, 524);
 		contentPane = new JPanel();

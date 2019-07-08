@@ -27,10 +27,6 @@ public class Notify extends Thread {
 					String nameDocument = inStream.readLine();
 					JOptionPane.showMessageDialog(null, "Sei stato invitato da " + username + " a collaborare al documento: " + nameDocument);
 				}
-				else {
-					System.out.println("ciaone");
-					break;
-				}
 			}
 		}
 		catch(IOException e) {

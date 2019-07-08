@@ -12,6 +12,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GUILogged extends JFrame {
 
@@ -29,7 +31,8 @@ public class GUILogged extends JFrame {
 	private JTextArea textArea;
 	private JButton btnInvite;
 	
-	public GUILogged() {
+	public GUILogged(String username) {
+		setTitle(username);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 663, 524);
 		contentPane = new JPanel();
@@ -79,24 +82,28 @@ public class GUILogged extends JFrame {
 		contentPane.add(btnLogout);
 		
 		btnCreate = new JButton("CREATE");
+		btnCreate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnCreate.setForeground(new Color(0, 0, 0));
 		btnCreate.setBackground(new Color(0, 51, 255));
 		btnCreate.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnCreate.setBounds(509, 10, 130, 33);
+		btnCreate.setBounds(509, 177, 130, 33);
 		contentPane.add(btnCreate);
 		
 		btnEdit = new JButton("EDIT");
 		btnEdit.setForeground(new Color(0, 0, 0));
 		btnEdit.setBackground(new Color(0, 51, 255));
 		btnEdit.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnEdit.setBounds(509, 53, 130, 33);
+		btnEdit.setBounds(509, 220, 130, 33);
 		contentPane.add(btnEdit);
 		
 		btnShow = new JButton("SHOW");
 		btnShow.setForeground(new Color(0, 0, 0));
 		btnShow.setBackground(new Color(0, 51, 255));
 		btnShow.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnShow.setBounds(509, 96, 130, 33);
+		btnShow.setBounds(509, 263, 130, 33);
 		contentPane.add(btnShow);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -113,14 +120,14 @@ public class GUILogged extends JFrame {
 		btnList.setForeground(new Color(0, 0, 0));
 		btnList.setBackground(new Color(0, 51, 255));
 		btnList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnList.setBounds(509, 139, 130, 33);
+		btnList.setBounds(509, 306, 130, 33);
 		contentPane.add(btnList);
 		
 		btnInvite = new JButton("INVITE");
 		btnInvite.setForeground(Color.BLACK);
 		btnInvite.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnInvite.setBackground(new Color(0, 51, 255));
-		btnInvite.setBounds(507, 182, 130, 33);
+		btnInvite.setBounds(509, 349, 130, 33);
 		contentPane.add(btnInvite);
 		
 		JLabel lblUtenteInvitato = new JLabel("Utente Invitato");

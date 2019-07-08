@@ -109,7 +109,7 @@ public class RequestHandler implements Runnable{
 										outStream.writeBytes("Login effettuato con successo" + '\n');
 									}
 									notifySocket = notifySock.accept();
-									Thread notifyThread = new NotificationHandler(username, notifySocket, utente, documentList);
+									Thread notifyThread = new NotificationHandler(notifySocket, utente, documentList);
 									notifyThread.start();
 								}
 
