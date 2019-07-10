@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 
 public class Configuration {
 	
-	public static int PORT_RMI = 9999;
+	public static int PORT_RMI = 9967;
 	public static int PORT_NOTIFY = 9998;
 	public static int PORT_TCP = 6789;
 	public static int PORT_MULTICAST = 9997;

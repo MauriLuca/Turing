@@ -74,19 +74,23 @@ public class EditHandler extends Thread {
 			username = inStream.readLine();
 
 			//leggo l'esito
-			String temp = inStream.readLine();
+			String esito = inStream.readLine();
 
-			if(temp.contains("errato")) {
+			if(esito.contains("errato")) {
 				JOptionPane.showMessageDialog(null, "Numero di sezione errato");
 			}
-			else if(temp.contains("editing")) {
+			else if(esito.contains("editing")) {
 				JOptionPane.showMessageDialog(null, "Sezione già in fase di editing");
 			}
-			else if(temp.contains("negato")){
+			else if(esito.contains("negato")){
 				JOptionPane.showMessageDialog(null, "Permesso di accesso NEGATO");
 			}
-			else if(temp.contains("esistente")) {
+			else if(esito.contains("esistente")) {
 				JOptionPane.showMessageDialog(null, "Documento non esistente");
+			}
+			//caso campo sezione errato
+			else if(esito.contains("errato")) {
+				JOptionPane.showMessageDialog(null, "Campo sezione errato");
 			}
 			else {
 				//apro il serversocketchannel

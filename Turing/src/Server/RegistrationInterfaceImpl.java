@@ -6,9 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RegistrationInterfaceImpl extends RemoteObject implements RegistrationInterface {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ConcurrentHashMap<String,User> registeredUsers;
 	

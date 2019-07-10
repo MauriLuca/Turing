@@ -60,7 +60,7 @@ public class LoginHandler extends Thread {
 				JOptionPane.showMessageDialog(null, "Utente già online");
 			}
 			else if(temp.contains("registrato")) {
-				JOptionPane.showMessageDialog(null, "Utente già registrato");
+				JOptionPane.showMessageDialog(null, "Utente non registrato");
 			}
 			//se ho dei documenti in attesa
 			else if(temp.contains("pending")) {
