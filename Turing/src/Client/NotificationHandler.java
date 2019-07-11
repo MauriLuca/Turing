@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import Server.Document;
@@ -30,19 +31,19 @@ public class NotificationHandler extends Thread {
 
 			while(true) {
 
-				ArrayList<String> documentListInvitations = utente.getInvitiOnline(); 
-				System.out.println("loop");
+				List<String> documentListInvitations = utente.getInvitiOnline(); 
+				
 				if (utente == null)
 					break;
 				//se l'utente ha inviti online
 				if(!documentListInvitations.isEmpty()) {
-
-					for(int i = 0; i < documentListInvitations.size(); i++) {
+					System.out.println("loop");
+					for(String invite : documentListInvitations) {
 						outStream.writeBytes("ok" + '\n');
-						Document docTemp = documentList.get(documentListInvitations.get(i));
+						Document docTemp = documentList.get(invite);
 
 						String invitingUser = docTemp.getCreator().getUser();
-						String nameDocument = documentListInvitations.get(i);
+						String nameDocument = invite;
 
 						outStream.writeBytes(invitingUser + '\n');
 						outStream.writeBytes(nameDocument + '\n');

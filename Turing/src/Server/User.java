@@ -1,24 +1,26 @@
 package Server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 
 public class User {
 	
 	private String username;
 	private String password;
 	private Stato stato;
-	private ArrayList<String> documentiUtente;
-	private ArrayList<String> invitiOnline;
-	private ArrayList<String> invitiOffline;
+	private List<String> documentiUtente;
+	private List<String> invitiOnline;
+	private List<String> invitiOffline;
 	
 	public User(String username, String password2) {
 		this.username = username;
 		this.password = password2;
 		this.stato = Stato.registered;
-		this.documentiUtente = new ArrayList<String>();		
-		this.invitiOnline = new ArrayList<String>();		
-		this.invitiOffline = new ArrayList<String>();		
+		this.documentiUtente = Collections.synchronizedList(new ArrayList<String>());		
+		this.invitiOnline = Collections.synchronizedList(new ArrayList<String>()); 
+		this.invitiOffline = Collections.synchronizedList(new ArrayList<String>()); 		
 	}
 	
 	public void clearInvitiOnline() {
@@ -29,11 +31,11 @@ public class User {
 		invitiOffline.clear();
 	}
 	
-	public ArrayList<String> getInvitiOnline() {
+	public List<String> getInvitiOnline() {
 		return invitiOnline;
 	}
 
-	public ArrayList<String> getInvitiOffline() {
+	public List<String> getInvitiOffline() {
 		return invitiOffline;
 	}
 
@@ -58,7 +60,7 @@ public class User {
 		documentiUtente.add(nameDocument);
 	}
 	
-	public ArrayList<String> getDocumentList() {
+	public List<String> getDocumentList() {
 		return documentiUtente;
 	}
 	

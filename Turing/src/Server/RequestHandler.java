@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
@@ -227,20 +228,9 @@ public class RequestHandler implements Runnable{
 											outStream.writeBytes(utente.getUser() + '\n');
 
 											SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(port));
-											Path path = Paths.get(Configuration.path + "/" + nameDocument + "/Section_" + numSection + ".txt");
-											System.out.println(path.toString());
-
-											FileChannel fc = FileChannel.open(path, StandardOpenOption.READ);
-
-											long position = 0L;
-											long size = fc.size();
-
-											while(position < size) {
-												position+= fc.transferTo(position, 2048, socketChannel);
-											}
-
-											fc.close();
-											fc = null; 	
+											
+											editingSection.sendSection(port, socketChannel);
+											
 											socketChannel.close();
 											socketChannel = null;
 
@@ -282,12 +272,12 @@ public class RequestHandler implements Runnable{
 								//invio il nome dell'utente che ha effettuato la richiesta
 								outStream.writeBytes(username + '\n');
 
-								//ricevo la porta per l'invios
+								//ricevo la porta per l'invio
 								int port = Integer.parseInt(inStream.readLine());
 
 								outStream.writeBytes(Integer.toString(doctemp.getNumOfSections()) + '\n');
 								//invio il documento
-								sendDocument(doctemp, port, outStream);
+								doctemp.sendDocument(port, outStream);
 
 							}
 							else {
@@ -327,8 +317,14 @@ public class RequestHandler implements Runnable{
 
 										//mando se la sezione è in fase di editing o no
 										outStream.writeBytes(Boolean.toString(doctemp.getSection(numOfSection).isEdit()) + '\n');
+										
+										SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(port));
+										
+										//prendo la sezione da inviare
+										editingSection = doctemp.getSection(numOfSection);
 										//invio il documento
-										sendSection(nameDocument, numOfSection, port);
+										editingSection.sendSection(port, socketChannel);
+										
 									}
 									else {
 										outStream.writeBytes("numero di sezione non valido" + '\n');
@@ -352,7 +348,7 @@ public class RequestHandler implements Runnable{
 
 					if(op.equals("list")) {
 						//ottengo l'array che contiene la lista di documenti al quale l'utente può accedere
-						ArrayList<String> list = utente.getDocumentList();
+						List<String> list = utente.getDocumentList();
 
 						String username = utente.getUser();
 
@@ -374,6 +370,8 @@ public class RequestHandler implements Runnable{
 						String nameDocument = inStream.readLine();
 						String numOfSection = inStream.readLine();
 
+						Document doctemp = documentList.get(nameDocument);
+						
 						//apro il serversocketchannel
 						ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 						//creo un socketaddress random
@@ -388,29 +386,11 @@ public class RequestHandler implements Runnable{
 						//accetto la connessione in arrivo dal server
 						SocketChannel socketChannel = serverSocketChannel.accept();
 
-						//routine di ricezione file
-						FileChannel fc = null;
-						String path = Configuration.path + "/" + nameDocument;
-						Files.createDirectories(Paths.get(path));
-
-						path = path + "/Section_" + numOfSection + ".txt";
-
-						//apro il file channel in mdalità scrittura
-						fc = FileChannel.open(Paths.get(path), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
-						//alloco il buffer supponendo file di testo di dimensione inferiore a 2kb
-						ByteBuffer buf = ByteBuffer.allocate(2048);
-
-						//leggo e scrivo sul buffer
-						while(socketChannel.read(buf) > 0) {
-							buf.flip();
-							fc.write(buf);
-							buf.clear();
-						}
-
-						//chiudo filechannel e socketchannel
-						fc.close();
+						Section sectemp = doctemp.getSection(Integer.parseInt(numOfSection));
+						
+						sectemp.receiveSection(socketChannel, nameDocument);
+						
 						socketChannel.close();
-						fc = null;
 						socketChannel = null;
 
 						JOptionPane.showMessageDialog(null, "Sezione ricevuta correttamente");
@@ -418,9 +398,9 @@ public class RequestHandler implements Runnable{
 						//chiudo il serversocketchannel
 						serverSocketChannel.close();
 						serverSocketChannel = null;	
-
+						
 						//tolgo il flag di edit dalla sezione e dall'utente
-						documentList.get(nameDocument).getSection(Integer.parseInt(numOfSection)).setEdit(false);
+						editingSection.setEdit(false);;
 						editingSection = null;
 						utente.setStato(Stato.logged);
 
@@ -482,8 +462,9 @@ public class RequestHandler implements Runnable{
 					}
 
 					//continuo il case switch
+					
 				}
-				else{
+				else {
 					if(utente != null) {
 						onlineUsers.remove(utente.getUser());
 						utente.setStato(Stato.registered);
@@ -491,6 +472,7 @@ public class RequestHandler implements Runnable{
 					}
 					if(editingSection != null) {
 						editingSection.setEdit(false);
+						//poi ricordati le lock
 						editingSection = null;
 					}
 					connSock.close();
@@ -499,75 +481,26 @@ public class RequestHandler implements Runnable{
 					break;
 				}
 			}
-
 		}
 		catch(IOException e) {
 			//funzione che dealloca e chiude le connessioni aperte
 			try {
+				if(utente != null) {
+					onlineUsers.remove(utente.getUser());
+					utente.setStato(Stato.registered);
+					utente = null;
+				}
+				if(editingSection != null) {
+					editingSection.setEdit(false);
+					//poi ricordati le lock
+					editingSection = null;
+				}
 				connSock.close();
-			} catch (IOException e1) {
+				return;
+			}
+			catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			e.printStackTrace();
-		}
-	}
-
-	//funzione di supporto per l'invio di un documento
-	public void sendDocument(Document document, int port, DataOutputStream outStream) {
-
-		try {
-			SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(port));
-			String nameDocument = document.getNameDocument();
-			int numOfSections = document.getNumOfSections();
-			FileChannel fc = null;
-			for(int i = 0; i < numOfSections; i++) {
-
-				Section sectiontemp = document.getSection(i);
-
-				//comunico al server se la sezione è in fase di editing
-				outStream.writeBytes(Boolean.toString(sectiontemp.isEdit()) + '\n');
-
-				Path path = Paths.get(Configuration.path + "/" + nameDocument + "/Section_" + i + ".txt");
-				fc = FileChannel.open(path, StandardOpenOption.READ);
-
-				long position = 0L;
-				long size = fc.size();
-
-				while(position < size) {
-					position+= fc.transferTo(position, 2048, socketChannel);
-				}
-			}
-			fc.close();
-			fc = null; 	
-			socketChannel.close();
-			socketChannel = null;
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void sendSection(String nameDocument, int numSection, int port) {
-		try {
-			SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(port));
-			Path path = Paths.get(Configuration.path + "/" + nameDocument + "/Section_" + numSection + ".txt");
-			System.out.println(path.toString());
-
-			FileChannel fc = FileChannel.open(path, StandardOpenOption.READ);
-
-			long position = 0L;
-			long size = fc.size();
-
-			while(position < size) {
-				position+= fc.transferTo(position, 2048, socketChannel);
-			}
-
-			fc.close();
-			fc = null; 	
-			socketChannel.close();
-			socketChannel = null;
-		}
-		catch(IOException e) {
-			e.printStackTrace();
 		}
 	}
 
