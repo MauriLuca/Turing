@@ -110,7 +110,7 @@ public class EditHandler extends Thread {
 
 				//routine di ricezione file
 				FileChannel fc = null;
-				String path = Configuration.clientPath + "/" + nomeUtente + "/" + nameDocument;
+				String path = Configuration.CLIENT_PATH + "/" + nomeUtente + "/" + nameDocument;
 				Files.createDirectories(Paths.get(path));
 
 				path = path + "/Section_" + section + ".txt";

@@ -61,7 +61,7 @@ public class EndEditHandler extends Thread {
 			String username = inStream.readLine();
 			
 			SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(port));
-			Path path = Paths.get(Configuration.clientPath + "/" + username + "/" + nameDocument + "/Section_" + section + ".txt");
+			Path path = Paths.get(Configuration.CLIENT_PATH + "/" + username + "/" + nameDocument + "/Section_" + section + ".txt");
 			System.out.println(path.toString());
 
 			FileChannel fc = FileChannel.open(path, StandardOpenOption.READ);

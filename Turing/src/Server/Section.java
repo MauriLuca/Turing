@@ -55,7 +55,7 @@ public class Section {
 	public synchronized void receiveSection(SocketChannel socketChannel, String nameDocument) {
 		//routine di ricezione file
 		FileChannel fc = null;
-		String path = Configuration.path + "/" + nameDocument;
+		String path = Configuration.SERVER_PATH + "/" + nameDocument;
 		try {
 			Files.createDirectories(Paths.get(path));
 

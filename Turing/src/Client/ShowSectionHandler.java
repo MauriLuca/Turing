@@ -89,7 +89,7 @@ public class ShowSectionHandler extends Thread {
 				//leggo il nome dell'utente
 				String nomeUtente = inStream.readLine();
 				String numOfSection = inStream.readLine();
-				String pathdocument = Configuration.clientPath + "/" + nomeUtente + "/" + nameDocument;
+				String pathdocument = Configuration.CLIENT_PATH + "/" + nomeUtente + "/" + nameDocument;
 				Files.createDirectories(Paths.get(pathdocument));
 
 				String edit = inStream.readLine();

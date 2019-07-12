@@ -82,7 +82,7 @@ public class ShowDocumentHandler extends Thread {
 				FileChannel fc = null;
 				//leggo il nome dell'utente
 				String nomeUtente = inStream.readLine();
-				String pathdocument = Configuration.clientPath + "/" + nomeUtente + "/" + nameDocument;
+				String pathdocument = Configuration.CLIENT_PATH + "/" + nomeUtente + "/" + nameDocument;
 				Files.createDirectories(Paths.get(pathdocument));
 				int numOfSections = Integer.parseInt(inStream.readLine());
 				for (int i = 0; i < numOfSections; i++) {

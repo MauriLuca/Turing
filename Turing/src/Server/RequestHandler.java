@@ -43,35 +43,28 @@ public class RequestHandler implements Runnable{
 
 		DataOutputStream outStream; //Stream in output
 		BufferedReader inStream; //Stream in input
-		User utente = null;
-		Section editingSection = null;
+		User utente = null; //Struttura utente
+		Section editingSection = null; //Struttura sezione
 
 		//case switch
 		try {
 			while(true) {
-
+				
 				//stream per la comunicazione col client
 				outStream = new DataOutputStream(connSock.getOutputStream());
-				inStream = new BufferedReader(new InputStreamReader(connSock.getInputStream()));		
+				inStream = new BufferedReader(new InputStreamReader(connSock.getInputStream()));	
 
 				//leggo la stringa del client che mi specifica l'operazione da eseguire
-				String op = inStream.readLine();
+				String request = inStream.readLine();
 
-				if(op != null) {
+				if(request != null) {
 
-					if(op.equals("login")) {
-
-						System.out.println("login ok");
-
+					if(request.equals("login")) {
 
 						String username = inStream.readLine();
 						String password = inStream.readLine();
-						System.out.println("lettura di pass e user");
 
-						System.out.println(registeredUsers.keySet());
 						if(registeredUsers.containsKey(username)) {
-
-							System.out.println("utente ok");
 
 							User temp = registeredUsers.get(username);
 
@@ -82,7 +75,6 @@ public class RequestHandler implements Runnable{
 								if(temp.getPassword().equals(password)) {
 
 									utente = temp;
-									System.out.println("password ok");
 									utente.setStato(Stato.logged);
 									onlineUsers.put(username, utente);
 
@@ -125,7 +117,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("logout")){
+					if(request.equals("logout")){
 
 						//rimuovo l'utente dalla lista online
 						onlineUsers.remove(utente.getUser());
@@ -143,7 +135,7 @@ public class RequestHandler implements Runnable{
 
 					}
 
-					if(op.equals("create")) {
+					if(request.equals("create")) {
 
 						String nameDocument = inStream.readLine();
 						String numOfSections = inStream.readLine();
@@ -167,7 +159,6 @@ public class RequestHandler implements Runnable{
 
 									//genero un indirizzo 
 									String multicastAddress = generateMulticastAddress();
-									System.out.println("Multicast address generato: " + multicastAddress);
 									//creo il documento
 									Document document = new Document(utente, nameDocument, numOfSectionsInt, multicastAddress);
 									//lo aggiungo alla lista documenti
@@ -184,7 +175,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("edit")) {
+					if(request.equals("edit")) {
 
 						if(utente != null) {
 							String nameDocument = inStream.readLine();
@@ -251,7 +242,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("showdocument")) {
+					if(request.equals("showdocument")) {
 
 						String nameDocument = inStream.readLine();
 						String username = utente.getUser();
@@ -284,7 +275,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("showsection")) {
+					if(request.equals("showsection")) {
 
 						String nameDocument = inStream.readLine();
 						String username = utente.getUser();
@@ -338,7 +329,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("list")) {
+					if(request.equals("list")) {
 						//ottengo l'array che contiene la lista di documenti al quale l'utente può accedere
 						List<String> list = utente.getDocumentList();
 
@@ -356,7 +347,7 @@ public class RequestHandler implements Runnable{
 						}
 					}
 
-					if(op.equals("endedit")) {
+					if(request.equals("endedit")) {
 
 						//ottengo nome del documento e numero di sezione
 						String nameDocument = inStream.readLine();
@@ -398,7 +389,7 @@ public class RequestHandler implements Runnable{
 
 					}
 
-					if(op.equals("invite")) {
+					if(request.equals("invite")) {
 
 						if(utente != null) {
 

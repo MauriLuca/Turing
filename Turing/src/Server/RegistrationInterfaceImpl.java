@@ -20,14 +20,12 @@ public class RegistrationInterfaceImpl extends RemoteObject implements Registrat
 	public boolean registrationRequest(String username, String password) throws RemoteException {
 			
 		if(registeredUsers.containsKey(username)) {
-			System.out.println("Utente già registrato");
 			return false;
 		}
 		
 		else{
 			User utente = new User(username, password);
 			registeredUsers.put(username, utente);
-			System.out.println(registeredUsers.keySet() + " " + username);
 			return true;
 		}
 	}
@@ -35,7 +33,6 @@ public class RegistrationInterfaceImpl extends RemoteObject implements Registrat
 
 	public boolean isRegistered(String username) throws RemoteException {
 		if(registeredUsers.containsKey(username)) {
-			System.out.println("Utente già registrato");
 			return true;
 		}
 		

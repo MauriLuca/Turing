@@ -12,6 +12,8 @@ import javax.swing.JPasswordField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GUITuring extends JFrame {
 
@@ -39,42 +41,46 @@ public class GUITuring extends JFrame {
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblUsername.setBounds(10, 10, 111, 33);
+		lblUsername.setBounds(422, 128, 111, 22);
 		contentPane.add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPassword.setBounds(10, 53, 111, 33);
+		lblPassword.setBounds(422, 203, 111, 22);
 		contentPane.add(lblPassword);
 		
 		usernameField = new JTextField();
 		usernameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		usernameField.setBounds(131, 10, 130, 29);
+		usernameField.setBounds(422, 160, 252, 33);
 		contentPane.add(usernameField);
 		usernameField.setColumns(10);
 		
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		passwordField.setBounds(131, 53, 130, 29);
+		passwordField.setBounds(422, 235, 252, 33);
 		contentPane.add(passwordField);
 		
 		btnLogin = new JButton("LOGIN");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnLogin.setForeground(new Color(0, 0, 0));
-		btnLogin.setBackground(new Color(0, 51, 255));
+		btnLogin.setBackground(new Color(102, 51, 255));
 		btnLogin.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnLogin.setBounds(131, 92, 130, 33);
+		btnLogin.setBounds(422, 333, 252, 33);
 		contentPane.add(btnLogin);
 		
 		btnRegister = new JButton("REGISTER");
-		btnRegister.setBackground(new Color(0, 51, 255));
+		btnRegister.setBackground(new Color(102, 51, 255));
 		btnRegister.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnRegister.setBounds(131, 135, 130, 33);
+		btnRegister.setBounds(422, 411, 252, 33);
 		contentPane.add(btnRegister);
 		
 		JLabel label = new JLabel("");
 		Image logo = new ImageIcon (this.getClass().getResource("/Turing logo.png")).getImage();
 		label.setIcon(new ImageIcon(logo));
-		label.setBounds(273, 199, 390, 320);
+		label.setBounds(10, 109, 343, 335);
 		contentPane.add(label);
 	}
 	

@@ -30,9 +30,9 @@ public class Document {
 		this.multicastAddress = multicastAddress;
 		authorizedUsers = new ConcurrentHashMap<String, User>();
 		authorizedUsers.put(creator.getUser(), creator);
-		this.doc = Collections.synchronizedList(new ArrayList<Section>());
+		this.doc = new ArrayList<Section>();
 
-		path = Paths.get(Configuration.path + "/" + nameDocument);
+		path = Paths.get(Configuration.SERVER_PATH + "/" + nameDocument);
 		try {
 			Files.createDirectory(path);
 		} catch (IOException e) {
@@ -40,7 +40,7 @@ public class Document {
 		}
 
 		for(int i = 0; i<numOfSections; i++) {
-			doc.add(new Section(Configuration.path + "/" + nameDocument, i));
+			doc.add(new Section(Configuration.SERVER_PATH + "/" + nameDocument, i));
 		}
 	}
 

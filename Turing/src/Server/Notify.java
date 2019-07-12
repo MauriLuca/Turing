@@ -11,9 +11,9 @@ public class Notify extends Thread {
 
 	private static Socket notifySock;
 	private static BufferedReader inStream;
-
+		
 	public void run() {
-
+		
 		try {
 			notifySock = new Socket("localhost", Configuration.PORT_NOTIFY);
 			inStream = new BufferedReader(new InputStreamReader(notifySock.getInputStream()));
@@ -41,6 +41,10 @@ public class Notify extends Thread {
 			}
 		}
 
+	}
+	
+	public void endNotify() {
+		
 	}
 
 }

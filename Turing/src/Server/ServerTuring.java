@@ -35,15 +35,15 @@ public class ServerTuring {
 		documentList = new ConcurrentHashMap<String, Document>();
 		
 		//elimino se esiste la cartella contenente tutti i file dei clients
-		if(Files.exists(Configuration.clientPath)) {
-			deleteFolderRecursively(Configuration.clientPath);
+		if(Files.exists(Configuration.CLIENT_PATH)) {
+			deleteFolderRecursively(Configuration.CLIENT_PATH);
 		}
 		//se la cartella già esiste la elimina, eliminando ricorsivamente tutti gli elementi in essa contenuti
-		if(Files.exists(Configuration.path)) {
-			deleteFolderRecursively(Configuration.path);
+		if(Files.exists(Configuration.SERVER_PATH)) {
+			deleteFolderRecursively(Configuration.SERVER_PATH);
 		}
 		//poi crea la cartella che conterrà tutti i documenti
-		Files.createDirectory(Configuration.path);
+		Files.createDirectory(Configuration.SERVER_PATH);
 		
 		try {
 			

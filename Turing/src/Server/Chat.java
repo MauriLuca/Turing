@@ -56,6 +56,5 @@ public class Chat extends Thread{
 	
 	public static void endChat() {
 		go = false;
-		System.out.println("nonono" + Boolean.toString(go));
 	}
 }
