@@ -28,7 +28,7 @@ public class ServerTuring {
 		
 		registeredUsers = new ConcurrentHashMap<String,User>();
 		onlineUsers = new ConcurrentHashMap<String,User>();
-		tp = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+		tp = (ThreadPoolExecutor) Executors.newFixedThreadPool(Configuration.POOL_DIMENSION);
 		serverSock = new ServerSocket(Configuration.PORT_TCP);
 		notifySock = new ServerSocket(Configuration.PORT_NOTIFY);
 		

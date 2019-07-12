@@ -7,15 +7,10 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,7 +26,7 @@ public class RequestHandler implements Runnable{
 	private ServerSocket notifySock; //socket per le notifiche
 	private Socket connSock; //socket per effettuare l'accept delle connessioni
 	private Socket notifySocket;//socket per le notifiche
-	private ArrayList<String> multicastAddressList;
+	private List<String> multicastAddressList;
 
 	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket, ServerSocket notifySock) {
 		this.registeredUsers = registeredUsers;
@@ -40,7 +35,7 @@ public class RequestHandler implements Runnable{
 		this.documentList = documentList;
 		this.notifySock = notifySock;
 		this.notifySocket = null;
-		multicastAddressList = new ArrayList<String>();
+		multicastAddressList = Collections.synchronizedList(new ArrayList<String>());
 
 	}
 
@@ -148,7 +143,7 @@ public class RequestHandler implements Runnable{
 
 					}
 
-					if(op.equals("newdocument")) {
+					if(op.equals("create")) {
 
 						String nameDocument = inStream.readLine();
 						String numOfSections = inStream.readLine();
@@ -328,18 +323,15 @@ public class RequestHandler implements Runnable{
 									}
 									else {
 										outStream.writeBytes("numero di sezione non valido" + '\n');
-										System.out.println("numero di sezione non valido");
 									}
 
 								}
 								else {
 									outStream.writeBytes("accesso al documento negato" + '\n');
-									System.out.println("accesso la documento negato");
 								}
 							}
 							else {
 								outStream.writeBytes("documento non esistente" + '\n');
-								System.out.println("documento non esistente");
 							}
 						}catch(NumberFormatException e) {
 							outStream.writeBytes("campo sezione errato" + '\n');
@@ -434,7 +426,6 @@ public class RequestHandler implements Runnable{
 
 											//controllo se è online e va notificato subito
 											if(onlineUsers.containsKey(invitedUsername)) {
-												System.out.println("ciaoneoneone");
 												invitedUser.addOnlineInvite(nameDocument);
 											}
 											//aggiungo nella lista degli inviti offline

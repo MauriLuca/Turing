@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import Server.Document;
+import Server.Stato;
 import Server.User;
 
 public class NotificationHandler extends Thread {
@@ -33,8 +34,10 @@ public class NotificationHandler extends Thread {
 
 				List<String> documentListInvitations = utente.getInvitiOnline(); 
 				
-				if (utente == null)
+				//se l'utente viene disconnesso posso terminare il thread
+				if(utente.getStato()==Stato.registered)
 					break;
+				
 				//se l'utente ha inviti online
 				if(!documentListInvitations.isEmpty()) {
 					System.out.println("loop");

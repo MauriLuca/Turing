@@ -32,12 +32,9 @@ public class CreateDocumentHandler extends Thread {
 
 		public void run() {
 			
-			//imposto il tipo di operazione
-			String op = "newdocument" + '\n';
-			
 			try {
 				//comunico l'operazione all'handler
-				outStream.writeBytes(op);
+				outStream.writeBytes("create" + '\n');
 				
 				//ottengo il nome del documento e il numero di sezioni che lo comporranno
 				String nameDocument = frame.getNameDocument() + '\n';
