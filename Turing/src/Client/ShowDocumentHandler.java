@@ -2,7 +2,6 @@ package Client;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -17,12 +16,10 @@ import java.nio.file.StandardOpenOption;
 import javax.swing.JOptionPane;
 
 import GUI.GUILogged;
-import GUI.GUITuring;
 import Server.Configuration;
 
 public class ShowDocumentHandler extends Thread {
 
-	private Socket clientSock; //Socket TCP
 	private DataOutputStream outStream; //Stream in output
 	private BufferedReader inStream; //Stream in input
 	private GUILogged frameLogged;
@@ -34,7 +31,6 @@ public class ShowDocumentHandler extends Thread {
 		//controllo che il socket non sia chiuso
 		if(clientSock.isClosed()) throw new IllegalArgumentException();
 
-		this.clientSock = clientSock;
 		this.outStream = outStream;
 		this.inStream = inStream;
 		this.frameLogged = frameLogged;

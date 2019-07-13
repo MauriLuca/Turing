@@ -2,7 +2,6 @@ package Client;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -21,7 +20,6 @@ import Server.Configuration;
 
 public class ShowSectionHandler extends Thread {
 
-	private Socket clientSock; //Socket TCP
 	private DataOutputStream outStream; //Stream in output
 	private BufferedReader inStream; //Stream in input
 	private GUILogged frameLogged;
@@ -33,7 +31,6 @@ public class ShowSectionHandler extends Thread {
 		//controllo che il socket non sia chiuso
 		if(clientSock.isClosed()) throw new IllegalArgumentException();
 
-		this.clientSock = clientSock;
 		this.outStream = outStream;
 		this.inStream = inStream;
 		this.frameLogged = frameLogged;

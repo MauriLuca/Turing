@@ -16,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 
-import Client.NotificationHandler;
-
 public class RequestHandler implements Runnable{
 
 	private ConcurrentHashMap<String,User> registeredUsers; //HashMap che memorizza tutti gli utenti registrati
@@ -31,7 +29,7 @@ public class RequestHandler implements Runnable{
 	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket, ServerSocket notifySock) {
 		this.registeredUsers = registeredUsers;
 		this.connSock = connectionSocket;
-		this.onlineUsers = onlineUsers;
+		RequestHandler.onlineUsers = onlineUsers;
 		this.documentList = documentList;
 		this.notifySock = notifySock;
 		this.notifySocket = null;

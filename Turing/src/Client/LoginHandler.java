@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 
 import GUI.GUILogged;
 import GUI.GUITuring;
-import Server.Notify;
 
 public class LoginHandler extends Thread {
 
@@ -174,7 +173,7 @@ public class LoginHandler extends Thread {
 		frameLogged.getList().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//parte il Thread
-				Thread listThread = new ListHandler(clientSock, outStream, inStream, frameLogged);
+				Thread listThread = new ListHandler(outStream, inStream, frameLogged);
 				listThread.start();
 			}
 

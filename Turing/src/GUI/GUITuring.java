@@ -34,7 +34,7 @@ public class GUITuring extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 722, 593);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(243, 243, 243));
+		contentPane.setBackground(new Color(0, 162, 232));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);

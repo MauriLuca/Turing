@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 public class GUIEditing extends JFrame {
 
@@ -25,13 +24,14 @@ public class GUIEditing extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 663, 524);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(0, 162, 232));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		btnEndEdit = new JButton("END EDIT");
 		btnEndEdit.setForeground(new Color(0, 0, 0));
-		btnEndEdit.setBackground(new Color(0, 51, 255));
+		btnEndEdit.setBackground(new Color(255, 0, 0));
 		btnEndEdit.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnEndEdit.setBounds(509, 444, 130, 33);
 		contentPane.add(btnEndEdit);
@@ -50,7 +50,7 @@ public class GUIEditing extends JFrame {
 		
 		btnSend = new JButton("SEND");
 		btnSend.setForeground(new Color(0, 0, 0));
-		btnSend.setBackground(new Color(0, 51, 255));
+		btnSend.setBackground(new Color(102, 51, 255));
 		btnSend.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnSend.setBounds(509, 319, 130, 115);
 		contentPane.add(btnSend);

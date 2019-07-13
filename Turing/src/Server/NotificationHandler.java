@@ -1,15 +1,10 @@
-package Client;
+package Server;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import Server.Document;
-import Server.Stato;
-import Server.User;
 
 public class NotificationHandler extends Thread {
 
@@ -40,7 +35,6 @@ public class NotificationHandler extends Thread {
 				
 				//se l'utente ha inviti online
 				if(!documentListInvitations.isEmpty()) {
-					System.out.println("loop");
 					for(String invite : documentListInvitations) {
 						outStream.writeBytes("ok" + '\n');
 						Document docTemp = documentList.get(invite);

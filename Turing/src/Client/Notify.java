@@ -1,4 +1,4 @@
-package Server;
+package Client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import javax.swing.JOptionPane;
+
+import Server.Configuration;
 
 public class Notify extends Thread {
 
