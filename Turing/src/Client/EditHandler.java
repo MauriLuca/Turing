@@ -168,7 +168,6 @@ public class EditHandler extends Thread {
 
 				Thread chatThread = new Chat(frameEditing.getTextArea(), chatSock, InetAddress.getByName(multicastAddress));
 				chatThread.start();
-				System.out.println("ciapala");
 			}
 
 
@@ -181,7 +180,6 @@ public class EditHandler extends Thread {
 
 	public void sendMessage(){
 		try {
-			System.out.println("non styampa");
 
 			calendar = Calendar.getInstance(TimeZone.getDefault());
 			int hours = calendar.get(Calendar.HOUR_OF_DAY);

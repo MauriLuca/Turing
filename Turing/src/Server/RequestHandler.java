@@ -24,7 +24,7 @@ public class RequestHandler implements Runnable{
 	private ServerSocket notifySock; //socket per le notifiche
 	private Socket connSock; //socket per effettuare l'accept delle connessioni
 	private Socket notifySocket;//socket per le notifiche
-	private List<String> multicastAddressList;
+	private List<String> multicastAddressList; //lista contenente gli indirizzi multicast generati per ogni documento
 
 	public RequestHandler(ConcurrentHashMap<String,User> registeredUsers, ConcurrentHashMap<String, User> onlineUsers, ConcurrentHashMap<String,Document> documentList, Socket connectionSocket, ServerSocket notifySock) {
 		this.registeredUsers = registeredUsers;
