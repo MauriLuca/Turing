@@ -74,7 +74,7 @@ public class RequestHandler implements Runnable{
 
 									utente = temp;
 									utente.setStato(Stato.logged);
-									onlineUsers.put(username, utente);
+									onlineUsers.putIfAbsent(username, utente);
 
 									//se l'utente è stato invitato mentre era offline
 									if(utente.hasPendingOfflineInvites()) {
@@ -160,7 +160,7 @@ public class RequestHandler implements Runnable{
 									//creo il documento
 									Document document = new Document(utente, nameDocument, numOfSectionsInt, multicastAddress);
 									//lo aggiungo alla lista documenti
-									documentList.put(nameDocument, document);
+									documentList.putIfAbsent(nameDocument, document);
 									//lo aggiungo alla lista dei documenti che l'utente può modificare
 									utente.addDocument(nameDocument);
 
@@ -279,7 +279,7 @@ public class RequestHandler implements Runnable{
 						String username = utente.getUser();
 						try {
 							int numOfSection = Integer.parseInt(inStream.readLine());
-							System.out.println(numOfSection);
+							
 							if(documentList.containsKey(nameDocument)) {
 
 								Document doctemp = documentList.get(nameDocument);

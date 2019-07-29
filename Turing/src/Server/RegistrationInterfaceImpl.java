@@ -18,16 +18,10 @@ public class RegistrationInterfaceImpl extends RemoteObject implements Registrat
 	
 	//Registrazione di un nuovo utente
 	public boolean registrationRequest(String username, String password) throws RemoteException {
-			
-		if(registeredUsers.containsKey(username)) {
-			return false;
-		}
 		
-		else{
 			User utente = new User(username, password);
-			registeredUsers.put(username, utente);
+			registeredUsers.putIfAbsent(username, utente);
 			return true;
-		}
 	}
 
 
