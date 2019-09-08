@@ -309,6 +309,10 @@ public class RequestHandler implements Runnable{
 										//invio il documento
 										editingSection.sendSection(port, socketChannel);
 										
+										//chiudo il socketChannel
+										socketChannel.close();
+										socketChannel = null;
+										
 									}
 									else {
 										outStream.writeBytes("numero di sezione non valido" + '\n');
